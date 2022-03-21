@@ -1,3 +1,4 @@
+#include <chrono>
 #include <stdio.h>
 #include <iostream>
 
@@ -35,28 +36,26 @@ int main()
     // glCullFace(GL_BACK);
     // glFrontFace(GL_CW);
 
-    ShaderProgram shaders("res/shaders/main.vert", "res/shaders/this.frag");
-    Mesh triangle(sizeof(Triangle::vertices), sizeof(Triangle::indices), Triangle::vertices, Triangle::indices);
+    std::chrono::system_clock::time_point startTime = std::chrono::system_clock::now();
 
-    glBindVertexArray(triangle.VAO);
+    ShaderProgram shaders("res/shaders/main.vert", "res/shaders/lava_lamp.frag");
+    Mesh square(sizeof(Square::vertices), sizeof(Square::indices), Square::vertices, Square::indices);
     
-    glBindBuffer(GL_ARRAY_BUFFER, triangle.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Triangle::vertices), Triangle::vertices, GL_STATIC_DRAW);
-    
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangle.EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Triangle::indices), Triangle::indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
     while (!glfwWindowShouldClose(win))
     {
-        glClearColor(0.3f, 0.1f, 0.15f, 1.0f);
+        glClearColor(0.05f, 0.02f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaders.id);
-        glBindVertexArray(triangle.VAO);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(square.VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+        using ms = std::chrono::duration<float, std::milli>;
+        auto deltaTime = std::chrono::duration_cast<ms>(std::chrono::system_clock::now() - startTime).count() / 1000.0f;
+
+        shaders.upload("u_time", deltaTime);
+        shaders.upload("u_resolution", glm::vec2(600));
 
         glfwSwapBuffers(win);
         glfwPollEvents();

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "fileman.hpp"
 
@@ -21,8 +23,6 @@ struct Shader
 
     void compile()
     {
-        #include <iostream>
-        std::cout << source << std::endl;
         glShaderSource(id, 1, &source, NULL);
         glCompileShader(id);
         
@@ -88,6 +88,24 @@ struct ShaderProgram
             // delete &vertex;
             // delete &fragment;
         }
+    }
+
+    void upload(const char* name, float& value)
+    {
+        int u_id = glGetUniformLocation(id, name);
+        glUniform1fv(u_id, 1, &value);
+    }
+
+    void upload(const char* name, const glm::vec2& value)
+    {
+        int u_id = glGetUniformLocation(id, name);
+        glUniform2fv(u_id, 1, glm::value_ptr(value));
+    }
+
+    void upload(const char* name, glm::vec3& value)
+    {
+        int u_id = glGetUniformLocation(id, name);
+        glUniform3fv(u_id, 1, glm::value_ptr(value));
     }
 
     unsigned int id;

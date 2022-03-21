@@ -1,5 +1,7 @@
-// Author:
-// Title:
+// Author: Sam GG
+// Title: 
+
+#version 330 core
 
 #ifdef GL_ES
 precision mediump float;
@@ -7,8 +9,9 @@ precision mediump float;
 
 #define PI 3.14159265359
 
+in vec3 v_pos;
+
 uniform vec2 u_resolution;
-uniform vec2 u_mouse;
 uniform float u_time;
 
 float random(float val)
@@ -46,7 +49,7 @@ float noise (in vec2 st) {
 }
 
 void main() {
-    vec2 st = gl_FragCoord.xy/u_resolution.xy;
+    vec2 st = v_pos.xy + vec2(0.5);
     vec2 center = vec2(0.5);
     float distance = 0.;
     
@@ -65,7 +68,6 @@ void main() {
     vec3 color = vec3(0.);
     
     angle += u_time * random(ist);
-    fst -= 0.1;
     
     distance = cos(floor(angle/radius));
     distance = cos(floor(.5 + angle/radius) * radius - angle) * length(fst);

@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 
+#include "shapes.hpp"
 
 struct Mesh 
 {
@@ -13,7 +14,7 @@ struct Mesh
     {
         gen_buffers();
 
-        // upload_mesh();
+        upload_mesh();
     }
     
     void gen_buffers()

@@ -1,12 +1,17 @@
-// Author:
-// Title:
+// Author: Sam GG
+// Title: 
+
+#version 330 core
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
+#define PI 3.14159265359
+
+in vec3 v_pos;
+
 uniform vec2 u_resolution;
-uniform vec2 u_mouse;
 uniform float u_time;
 
 float random(float val)
@@ -40,16 +45,6 @@ float noise (in vec2 st) {
             (d - b) * u.x * u.y;
 }
 
-float line(float val, float center, float size)
-{
-    return step(center - size, val) - step(center + size, val);
-}
-
-float smoothline(float val, float center, float size, float smoothness)
-{
-    return smoothstep(center - size, center - size, val) - smoothstep(center + size * smoothness, center + size, val);
-}
-
 mat2 rotate2D(float angle)
 {
     return mat2(
@@ -59,29 +54,24 @@ mat2 rotate2D(float angle)
 }
 
 void main() {
-    vec2 st = gl_FragCoord.xy/u_resolution.xy;
+    vec2 st = v_pos.xy + vec2(0.5);
     st.x *= u_resolution.x/u_resolution.y;
-    
-    vec2 colrow = vec2(10.);
+    st *= 0.104 * 100.;
+
     vec3 color = vec3(0.);
+	st += vec2(u_time);
+    st *= rotate2D(-70.);
+    float n1 = noise(st);
+    st *= rotate2D(70.);
+    st -= vec2(u_time);
     
-	st *= colrow;
-    st += noise(st * 0.300);
+    st += vec2(u_time * 0.02, n1);
+    st *= rotate2D(40.);
+    float n2 = noise(st);
+    st += vec2(u_time * 0.116, 0.);
+    float n3 = noise(st);
     
-    st -= colrow / 2.;
-    st = rotate2D(u_time / 10.) * st;
-    st += colrow / 2.;
-    
-    st *= rotate2D(noise(vec2(sin(u_time))) * 0.001 * u_time);
-    
-    vec2 fst = fract(st);
-    vec2 ist = floor(st);
-    
-    vec3 yellow = vec3(1., 1., 0.);
-    vec3 magenta = vec3(1., 0., 1.);
-    
-	color = step(min(1., abs(sin(noise(ist) * u_time * 3.14 * 0.156)) + 0.3) , mix(yellow, magenta, distance(fst, vec2(0.5))));
-    //color = vec3(st, 0.);
-    
+    color = vec3(step(0.896, fract(n3 + n2)));
+
     gl_FragColor = vec4(color,1.0);
 }

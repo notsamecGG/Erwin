@@ -1,12 +1,18 @@
-// Author:
-// Title:
+// Author: Sam GG
+// Title: 
+
 #version 330 core
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#define PI 3.14159265359
 
 in vec3 v_pos;
 
-// uniform vec2 u_resolution;
-// uniform vec2 u_mouse;
-// uniform float u_time;
+uniform vec2 u_resolution;
+uniform float u_time;
 
 float random(float val)
 {
@@ -18,6 +24,15 @@ float random(vec2 val)
     return fract(sin(dot(val,
             vec2(12.9898,78.233)))*
         43758.5453123);
+}
+
+float noise (in float val)
+{
+    float ival = floor(val);
+    float fval = fract(val);
+    float u = fval * fval * (3.0 - 2.0 * fval);
+    
+    return smoothstep(random(ival), random(ival + 1.), u);
 }
 
 // Based on Morgan McGuire @morgan3d
@@ -58,18 +73,20 @@ mat2 rotate2D(float angle)
 }
 
 void main() {
-    //vec2 st = gl_FragCoord.xy/u_resolution.xy;
-    //st.x *= u_resolution.x/u_resolution.y;
     vec2 st = v_pos.xy + vec2(0.5);
+    st.x *= u_resolution.x/u_resolution.y;
     
-
-    vec2 colrow = vec2(10., 5.);
+    vec2 colrow = vec2(10.);
     vec3 color = vec3(0.);
     
-	st *= 10.;
-    st *= rotate2D(45.);
-    
+	st *= colrow;
     st += noise(st * 0.300);
+    
+    st -= colrow / 2.;
+    st = rotate2D(u_time / 10.) * st;
+    st += colrow / 2.;
+    
+    st *= rotate2D(noise(vec2(sin(u_time / 3.14))) * 0.0005 * u_time);
     
     vec2 fst = fract(st);
     vec2 ist = floor(st);
@@ -77,8 +94,8 @@ void main() {
     vec3 yellow = vec3(1., 1., 0.);
     vec3 magenta = vec3(1., 0., 1.);
     
-    color = mix(yellow, magenta, 1. - smoothline(fst.x, 0.5, 0.1, -0.014) * 1. - smoothline(fst.y, 0.5, 0.1, -0.454));
-	color = mix(yellow, magenta, distance(fst, vec2(0.5)));
+	color = step(min(1., abs(sin(noise(ist) * u_time * 3.14 * 0.156)) + 0.660) , mix(yellow, magenta, distance(fst, vec2(0.5))));
+    //color = vec3(st, 0.);
     
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color,1.0);
 }
