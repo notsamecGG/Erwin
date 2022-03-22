@@ -1,5 +1,11 @@
 #pragma once
-struct Triangle 
+struct IShape 
+{
+    static float* vertices;
+    static unsigned int* indices;
+};
+
+struct Triangle : public IShape 
 {
     static constexpr float vertices[] = {
         -0.5f, -0.5f,  0.0f,
@@ -12,8 +18,7 @@ struct Triangle
     };
 };
 
-
-struct Square 
+struct Square : public IShape 
 { 
     static constexpr float vertices[] = {
          0.5f,  0.5f, 0.0f,  // top right
@@ -28,7 +33,7 @@ struct Square
     };
 };
 
-struct Star 
+struct Star  : public IShape
 { 
     static constexpr float vertices[] = {
         0.32f,  0.32f, 0.0f,  // top right
@@ -53,8 +58,8 @@ struct Star
     }; 
 };
 
-struct Cube
-{
+struct Cube : public IShape
+{ 
     static constexpr float vertices[] = {
         -0.5f, -0.5f, -0.5f, //0  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f, //1  1.0f, 0.0f,
@@ -95,8 +100,8 @@ struct Cube
     };
 };
 
-struct Plane
-{
+struct Plane : public IShape
+{ 
     static constexpr float _vertices[] = {
         -0.5f,  0.0f,  0.5f,
          0.5f,  0.0f,  0.5f, 
@@ -111,17 +116,6 @@ struct Plane
         2, 1, 0,
         3, 2, 0
     };
-
-    Plane(int repetitions)
-    {
-        float l_verticies[repetitions * 3 * 4];
-        unsigned int l_indices[repetitions * 3 * 4];
-
-        for(int i = 0; i < repetitions; i++)
-        {
-            
-        }
-    }
 
     float* verticies;
     unsigned int* indices;

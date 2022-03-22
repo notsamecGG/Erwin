@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/erwin.dir/libs/glad.c.o CMakeFiles/erwin.dir/src/main.cpp.o  -o erwin  -lGL -ldl -lglfw 
