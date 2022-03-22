@@ -16,10 +16,10 @@ struct Shader
         id = glCreateShader(type);
     }
 
-    ~Shader()
-    {
-        glDeleteShader(id);
-    }
+    // ~Shader()
+    // {
+    //     glDeleteShader(id);
+    // }
 
     void compile()
     {
