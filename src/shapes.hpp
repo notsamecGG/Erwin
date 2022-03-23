@@ -1,4 +1,20 @@
 #pragma once
+#include <glm/glm.hpp>
+
+
+#define DATA_FUNC(vertices, incides) static ShapeData data() { return ShapeData(sizeof(vertices), sizeof(indices), vertices, indices); } 
+
+struct ShapeData
+{
+    ShapeData(const int& _vertices_size, const int& _indices_size, const float* _vertices, const unsigned int* _indices)
+     : vertices(_vertices), indices(_indices), vertices_size(_vertices_size), indices_size(_indices_size) { }
+
+    const int vertices_size;
+    const int indices_size;
+    const float* vertices;
+    const unsigned int* indices;
+};
+
 struct IShape 
 {
     static float* vertices;
@@ -16,6 +32,8 @@ struct Triangle : public IShape
     static constexpr unsigned int indices[] = {
         0, 1, 2
     };
+
+    DATA_FUNC(vertices, indices)
 };
 
 struct Square : public IShape 
@@ -31,6 +49,8 @@ struct Square : public IShape
         1, 2, 3,    // second triangle
         0, 1, 3   // first triangle
     };
+
+    DATA_FUNC(vertices, indices)
 };
 
 struct Star  : public IShape
@@ -56,6 +76,8 @@ struct Star  : public IShape
         2, 1, 6,
         3, 2, 7
     }; 
+
+    DATA_FUNC(vertices, indices)
 };
 
 struct Cube : public IShape
@@ -98,6 +120,8 @@ struct Cube : public IShape
         3, 2, 6, 
         6, 7, 3
     };
+
+    DATA_FUNC(vertices, indices)
 };
 
 struct Plane : public IShape
@@ -117,6 +141,5 @@ struct Plane : public IShape
         3, 2, 0
     };
 
-    float* verticies;
-    unsigned int* indices;
+    DATA_FUNC(vertices, indices)
 };

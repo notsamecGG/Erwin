@@ -39,7 +39,7 @@ int main()
     std::chrono::system_clock::time_point startTime = std::chrono::system_clock::now();
 
     ShaderProgram shaders("res/shaders/main.vert", "res/shaders/main.frag");
-    Mesh square(sizeof(Square::vertices), sizeof(Square::indices), Square::vertices, Square::indices);
+    Mesh square(glm::vec3(1.0f), Square::data());
     
     while (!glfwWindowShouldClose(win))
     {

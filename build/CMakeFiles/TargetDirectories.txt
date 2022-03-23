@@ -1,3 +1,0 @@
-/home/sam/dev/cpp/opengl/erwin/build/CMakeFiles/rebuild_cache.dir
-/home/sam/dev/cpp/opengl/erwin/build/CMakeFiles/edit_cache.dir
-/home/sam/dev/cpp/opengl/erwin/build/CMakeFiles/erwin.dir
