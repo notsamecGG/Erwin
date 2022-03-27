@@ -16,11 +16,13 @@ uniform float u_time;
 
 void main() {
     vec2 st = v_pos.xy + vec2(0.5);
+    float ratio = u_resolution.x/u_resolution.y;
 
     vec2 center = vec2(0.5);
     float distance = 0.;
     
-    st.x *= u_resolution.x/u_resolution.y;
+    st.x *= ratio;
+    center.x *= ratio;
     st -= center;
     
     //float radius = distance(st, center);

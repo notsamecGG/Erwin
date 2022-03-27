@@ -9,6 +9,7 @@
 
 #include "shapes.hpp"
 
+
 struct Mesh 
 {
     Mesh(const glm::vec3& _scale, ShapeData shape)
@@ -48,7 +49,7 @@ struct Mesh
 
     void resize(const glm::vec3& scale) 
     {
-        for (int i=0; i < sizeof(vertices) / sizeof(float) / 3; i++)
+        for (int i=0; i < vertices.size() / 3; i++)
         {
             int startIndex = i * 3;
 
@@ -56,6 +57,8 @@ struct Mesh
             vertices[startIndex + 1] *= scale.y;
             vertices[startIndex + 2] *= scale.z;
         }
+
+        upload_mesh();
     }
     
     IShape shape;

@@ -1,31 +1,33 @@
-// Author:
-// Title:
+// Author: Sam GG
+// Title: 
+
+#version 330 core
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-uniform vec2 u_resolution;
-uniform vec2 u_mouse;
+#define PI 3.14159265359
+
+in vec3 v_pos;
+
+uniform ivec2 u_resolution;
+uniform vec2 u_position;
 uniform float u_time;
 
 void main() {
-    vec2 st = gl_FragCoord.xy/u_resolution.xy;
-    const float maxIterations = 120.;
+    vec2 st = v_pos.xy;
+    float ratio = u_resolution.x/u_resolution.y;
+    float maxIterations = floor(u_time);
+    
+    st.x *= ratio;
     
     st *= 4.;
-    
-    st -= 2.;
-    
-    st /= 200000.;
-    st -= vec2(0.6405,-0.3595);
-    
-    
-    
-    // st -= vec2(0.580,-0.420);
-    
-    st.x *= u_resolution.x/u_resolution.y;
 
+    st /= max(1., u_time - 2.);
+    // st -= u_position;
+    st -= vec2(0.740,-0.090) + vec2(0.820,0.570) * 0.01;
+    
     float a = st.x;
     float b = st.y;
     
@@ -51,6 +53,7 @@ void main() {
     
     vec3 color = vec3(0.);
     color = vec3(brightness) / maxIterations;
+    color = vec3(brightness, brightness, 0.) * brightness / maxIterations;
 
     gl_FragColor = vec4(color,1.0);
 }
