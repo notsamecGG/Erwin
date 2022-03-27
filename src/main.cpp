@@ -17,11 +17,13 @@
 void glfw_error_callback(int, const char*);
 void glfw_win_resize_callback(GLFWwindow* win, int width, int height);
 void glfw_key_callback(GLFWwindow* win, int key, int scancode, int action, int mode);
+void glfw_scroll_callback(GLFWwindow* win, double x_offset, double y_offset);
 
 void Input();
 
 GLFWwindow* win;
 glm::vec2 speed;
+float* zoom;
 
 int main()
 {
@@ -37,6 +39,7 @@ int main()
     glfwSetErrorCallback(glfw_error_callback);
     glfwSetWindowSizeCallback(win, glfw_win_resize_callback);
     glfwSetKeyCallback(win, glfw_key_callback);
+    glfwSetScrollCallback(win, glfw_scroll_callback);
 
     glfwMakeContextCurrent(win); 
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress); // link with glad
@@ -52,7 +55,11 @@ int main()
     Mesh square(glm::vec3(1.0f), Square::data());
     Object sq(square, shaders, glm::vec3(0.), glm::vec3(2.));
 
-    glm::vec2 position;
+    glm::vec2 position = glm::vec2(0.0f);
+    glm::vec<2, double> mousePos;
+    glm::vec<2, int32_t> winSize;
+
+    zoom = new float();
     
     while (!glfwWindowShouldClose(win))
     {
@@ -66,16 +73,17 @@ int main()
         using ms = std::chrono::duration<float, std::milli>;
         auto deltaTime = std::chrono::duration_cast<ms>(std::chrono::system_clock::now() - startTime).count() / 1000.0f;
 
-        glm::vec<2, int32_t> winSize;
         glfwGetWindowSize(win, &winSize.x, &winSize.y);
-
-        std::cout << winSize.x << winSize.y << std::endl;
 
         shaders.upload("u_time", deltaTime);
         shaders.upload("u_resolution", winSize);
         shaders.upload("u_position", position);
+        shaders.upload("u_zoom", *zoom);
+        shaders.upload("u_mousePos", (glm::vec2)mousePos);
 
         Input();
+
+        glfwGetCursorPos(win, &mousePos.x, &mousePos.y);
 
         position += speed;
 
@@ -84,6 +92,9 @@ int main()
     }
 
     glfwTerminate();
+
+    delete zoom;
+
     return 0;
 }
 
@@ -105,17 +116,24 @@ void glfw_key_callback(GLFWwindow* win, int key, int scancode, int action, int m
     }
 }
 
+void glfw_scroll_callback(GLFWwindow* win, double x_offset, double y_offset)
+{
+    *zoom += y_offset;
+}
+
+// TODO: multiply x by x/y ratio
+
 void Input()
 {
     if (glfwGetKey(win, GLFW_KEY_W))
-        speed.y -= MOVEMENT_SPEED;
+        speed.y -= MOVEMENT_SPEED * 1. / glm::pow(10, *zoom / 10.);
 
     if (glfwGetKey(win, GLFW_KEY_S))
-        speed.y += MOVEMENT_SPEED;    
+        speed.y += MOVEMENT_SPEED * 1. / glm::pow(10, *zoom / 10.);    
         
     if (glfwGetKey(win, GLFW_KEY_A))
-        speed.x += MOVEMENT_SPEED;
+        speed.x += MOVEMENT_SPEED * 1. / glm::pow(10, *zoom / 10.);
 
     if (glfwGetKey(win, GLFW_KEY_D))
-        speed.x -= MOVEMENT_SPEED;
+        speed.x -= MOVEMENT_SPEED * 1. / glm::pow(10, *zoom / 10.);
 }

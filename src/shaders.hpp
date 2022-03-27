@@ -90,25 +90,31 @@ struct ShaderProgram
         }
     }
 
-    void upload(const char* name, float& value)
+    void upload(const char* name, float& value) const
     {
         int u_id = glGetUniformLocation(id, name);
         glUniform1fv(u_id, 1, &value);
     }
 
-    void upload(const char* name, glm::vec<2, int>& value)
+    void upload(const char* name, glm::vec<2, int>& value) const
     {
         int u_id = glGetUniformLocation(id, name);
         glUniform2iv(u_id, 1, glm::value_ptr(value));
-    }
+    }    
 
-    void upload(const char* name, glm::vec2& value)
+    void upload(const char* name, glm::vec2& value) const
     {
         int u_id = glGetUniformLocation(id, name);
         glUniform2fv(u_id, 1, glm::value_ptr(value));
     }
 
-    void upload(const char* name, glm::vec3& value)
+    void upload(const char* name, const glm::vec2& value) const
+    {
+        int u_id = glGetUniformLocation(id, name);
+        glUniform3fv(u_id, 1, glm::value_ptr(value));
+    }
+
+    void upload(const char* name, glm::vec3& value) const
     {
         int u_id = glGetUniformLocation(id, name);
         glUniform3fv(u_id, 1, glm::value_ptr(value));
